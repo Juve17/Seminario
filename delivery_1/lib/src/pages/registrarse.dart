@@ -20,22 +20,24 @@ class _RegistrarseState extends State<Registrarse> {
     double ancho = screensize.width;
 
     return Scaffold(
+      backgroundColor: kfondo,
       appBar: AppBar(
         automaticallyImplyLeading: true,
         backgroundColor: kfondo,
         elevation: 0,
       ),
-      body: Container(
-        height: double.infinity,
+      body: SingleChildScrollView(
+        /* height: double.infinity,
         width: double.infinity,
-        decoration: const BoxDecoration(color: kfondo),
+        decoration: const BoxDecoration(color: kfondo), */
+        
         child: Stack(
           children: [
             Container(
-              height: alto - 10,
+              height: alto - 150,
               width: ancho - 10,
               margin: const EdgeInsets.only(right: 40, left: 40, bottom: 90),
-              padding: const EdgeInsets.all(25),
+              padding: const EdgeInsets.all(15),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(30),
@@ -142,10 +144,10 @@ class _RegistrarseState extends State<Registrarse> {
               ),
             ),
             Positioned(
-              top: alto - 260,
+              top: alto - 220,
               left: 40,
               child: SizedBox(
-                height: 170,
+                height: 150,
                 child: Image.asset(
                   'assets/image/inicio2.png',
                   fit: BoxFit.cover,
