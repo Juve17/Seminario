@@ -5,7 +5,7 @@ Container input_(
     {required String label,
     double tamanio = 15,
     String type = 'text',
-    String placeholder_ = ''}) {
+    String placeholder_ = '',  TextEditingController? controller}) {
   TextInputType keyboardType;
   switch (type) {
     case 'text':
@@ -49,6 +49,7 @@ Container input_(
           height: 10,
         ),
         TextField(
+          controller: controller,
           keyboardType: keyboardType,
           decoration: InputDecoration(
             filled: true,

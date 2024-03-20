@@ -4,9 +4,17 @@ import 'package:delivery_1/src/widgets/headlibre_.dart';
 import 'package:delivery_1/src/widgets/input.dart';
 import 'package:flutter/material.dart';
 
-class IniciarSession extends StatelessWidget {
+class IniciarSession extends StatefulWidget {
   const IniciarSession({super.key});
 
+  @override
+  State<IniciarSession> createState() => _IniciarSessionState();
+}
+
+class _IniciarSessionState extends State<IniciarSession> {
+  final TextEditingController _usuarioController = TextEditingController();
+  final TextEditingController _contrasenaController = TextEditingController();
+  String _mensaje = '';
   @override
   Widget build(BuildContext context) {
     Size screensize = MediaQuery.of(context).size;
@@ -31,11 +39,15 @@ class IniciarSession extends StatelessWidget {
               child: Column(
                 children: [
                   h1_(value: 'Bienvenido'),
-                  input_(label: 'Usuario', type: 'text'),
+                  input_(
+                      label: 'Usuario',
+                      type: 'text',
+                      controller: _usuarioController),
                   input_(
                       label: 'Contraseña',
                       placeholder_: 'Contraseña',
-                      type: 'password'),
+                      type: 'password',
+                      controller: _contrasenaController),
                   Center(
                     child: Container(
                       margin: const EdgeInsets.all(10),
@@ -46,6 +58,9 @@ class IniciarSession extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: GestureDetector(
+                        onTap: () {
+                          _verificarCredenciales;
+                        },
                         child: const Text(
                           'Registrarse',
                           style: TextStyle(
@@ -56,6 +71,7 @@ class IniciarSession extends StatelessWidget {
                       ),
                     ),
                   ),
+                  Text(_mensaje,style: const TextStyle(color: Colors.red,)),
                 ],
               ),
             ),
@@ -74,5 +90,23 @@ class IniciarSession extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _verificarCredenciales() {
+    String usuario = _usuarioController.text;
+    String contrasena = _contrasenaController.text;
+
+    // Aquí puedes agregar la lógica para verificar las credenciales
+    // Por ejemplo, puedes comparar el usuario y la contraseña con los valores esperados
+
+    if (usuario == 'usuarioCorrecto' && contrasena == 'contrasenaCorrecta') {
+      setState(() {
+        _mensaje = 'Inicio de sesión correcto';
+      });
+    } else {
+      setState(() {
+        _mensaje = 'Usuario o contraseña incorrectos';
+      });
+    }
   }
 }
