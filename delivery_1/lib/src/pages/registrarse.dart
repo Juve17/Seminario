@@ -1,5 +1,6 @@
- 
-import 'package:delivery_1/src/components/label_input.dart';
+import 'package:delivery_1/src/widgets/h1_.dart';
+import 'package:delivery_1/src/widgets/headlibre_.dart';
+import 'package:delivery_1/src/widgets/input.dart';
 import 'package:delivery_1/src/routes/constantes.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,7 @@ class Registrarse extends StatefulWidget {
 
 class _RegistrarseState extends State<Registrarse> {
   bool informacion = false;
-  bool condiciones=false;
+  bool condiciones = false;
   @override
   Widget build(BuildContext context) {
     Size screensize = MediaQuery.of(context).size;
@@ -21,16 +22,8 @@ class _RegistrarseState extends State<Registrarse> {
 
     return Scaffold(
       backgroundColor: kfondo,
-      appBar: AppBar(
-        automaticallyImplyLeading: true,
-        backgroundColor: kfondo,
-        elevation: 0,
-      ),
+      appBar: headLibre_(),
       body: SingleChildScrollView(
-        /* height: double.infinity,
-        width: double.infinity,
-        decoration: const BoxDecoration(color: kfondo), */
-        
         child: Stack(
           children: [
             Container(
@@ -44,14 +37,7 @@ class _RegistrarseState extends State<Registrarse> {
               ),
               child: Column(
                 children: [
-                  const Text(
-                    'RELLENE EL FORMULARIO DE REGISTRO',
-                    style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: ktexto),
-                    textAlign: TextAlign.center,
-                  ),
+                  h1_(value: 'RELLENE EL FORMULARIO DE REGISTRO'),
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     width: double.infinity,
@@ -85,10 +71,16 @@ class _RegistrarseState extends State<Registrarse> {
                       ],
                     ),
                   ),
-                  labelInput(txttexto: 'Ingrese su dirección'),
-                  labelInput(txttexto: 'Correo Electronico'),
-                  labelInput(txttexto: 'Contraseña'),
-                  labelInput(txttexto: 'Confirmar Contraseña'),
+                  input_(label: 'Ingrese su dirección', type: 'text'),
+                  input_(label: 'Correo Electronico', type: 'email'),
+                  input_(
+                      label: 'Contraseña',
+                      placeholder_: 'Contraseña',
+                      type: 'password'),
+                  input_(
+                      label: 'Confirmar Contraseña',
+                      placeholder_: 'Contraseña',
+                      type: 'password'),
                   Center(
                     child: Container(
                       margin: const EdgeInsets.all(10),
@@ -115,27 +107,33 @@ class _RegistrarseState extends State<Registrarse> {
                       Row(
                         children: [
                           Checkbox(
-                            activeColor: ktexto,
+                              activeColor: ktexto,
                               value: informacion,
                               onChanged: (bool? value) {
                                 setState(() {
                                   informacion = value ?? false;
                                 });
                               }),
-                          const Text('Acepto recibir información',style: TextStyle(color: ktexto),),
+                          const Text(
+                            'Acepto recibir información',
+                            style: TextStyle(color: ktexto),
+                          ),
                         ],
                       ),
                       Row(
                         children: [
                           Checkbox(
-                            activeColor: ktexto,
+                              activeColor: ktexto,
                               value: condiciones,
                               onChanged: (bool? value) {
                                 setState(() {
                                   condiciones = value ?? false;
                                 });
                               }),
-                          const Text('Acepto recibir información',style: TextStyle(color: ktexto),),
+                          const Text(
+                            'Acepto recibir información',
+                            style: TextStyle(color: ktexto),
+                          ),
                         ],
                       ),
                     ],
