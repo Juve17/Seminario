@@ -1,18 +1,31 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'package:delivery_1/src/models/pedido_model.dart';
+import 'package:delivery_1/src/models/usuarios_model.dart';
+export 'package:delivery_1/src/models/usuarios_model.dart';
 export 'package:delivery_1/src/models/pedido_model.dart';
+
 class DBProvider {
   static late Database _database;
   static final DBProvider db = DBProvider._();
+  final Completer<Database> _dbCompleter = Completer();
 
-  DBProvider._();
+  DBProvider._() {
+    _initDB();
+  }
+
+  Future<void> _initDB() async {
+    _database = await initDB();
+    _dbCompleter.complete(_database);
+  }
 
   Future<Database> get database async {
+    await _dbCompleter.future;
     // ignore: unnecessary_null_comparison
     if (_database != null) return _database;
 
@@ -22,9 +35,12 @@ class DBProvider {
 
 /*crear la base de datos*/
 /* ===========================================*/
-  initDB() async {
+  Future<Database> initDB() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     final path = join(documentsDirectory.path, 'DeliveryDB.db');
+    if (kDebugMode) {
+      print(path);
+    }
     /*creamos la base de datos*/
     return await openDatabase(
       path,
@@ -33,83 +49,74 @@ class DBProvider {
       onCreate: (db, version) async {
         /*creamos nuestras tablas*/
         /* AUTOINCREMENT */
-        await db.execute('CREATE TABLE pedido ('
+        await db.execute('CREATE TABLE usuario ('
             'id INTEGER PRIMARY KEY,'
-            'fecha DATE,'
-            'cliente TEXT,'
+            'nombres TEXT,'
+            'apellidos TEXT,'
             'estado INTEGER DEFAULT 1'
             ')');
       },
+      
     );
   }
 
   /* ===========================================*/
-  /* crear registros */
-  nuevoPedidoRaw(PedidoModel nuevoPedido) async {
-    final db = await database;
-    /*insercion*/
 
-    final res = await db.rawInsert("INSERT INTO pedido (id,fecha,cliente) "
-        "VALUES (${nuevoPedido.id}',${nuevoPedido.fecha}','${nuevoPedido.cliente}')");
-    return res;
-  }
-
-  /* metodo dos recomendado para insertar */
-  nuevoPedido(PedidoModel nuevoPedido) async {
+  /*==============================================================================================*/
+  /* usuarios */
+  nuevoUsuario(UserModel nuevoUsuario) async {
     final db = await database;
-    final res = db.insert('pedido', nuevoPedido.toJson());
+    final res = db.insert('usuario', nuevoUsuario.toJson());
     return res;
   }
 
   /*=============================================================*/
   /* extraer información */
-  Future<PedidoModel?> gedPedido(int id) async{
-    final db=await database;
+  Future<UserModel?> getUsuario(int id) async {
+    final db = await database;
 
-    final res =await db.query('pedido',where: 'id=?',whereArgs: [id]);
+    final res = await db.query('usuario', where: 'id=?', whereArgs: [id]);
 
     /*retornara una lista de registros un map*/
-    return res.isNotEmpty ? PedidoModel.fromJson(res.first):null;
+    return res.isNotEmpty ? UserModel.fromJson(res.first) : null;
   }
+
 /*metodo dos*/
-  Future<List<PedidoModel>> getTodosPedidos() async {
+  Future<List<UserModel>> getTodosUsuarios() async {
     final db = await database;
-    final res = await db.query('pedido');
-    List<PedidoModel> list=res.isNotEmpty
-                          ?res.map((e) => PedidoModel.fromJson(e)).toList()
-                          :[];
+    final res = await db.query('usuario');
+    List<UserModel> list =
+        res.isNotEmpty ? res.map((e) => UserModel.fromJson(e)).toList() : [];
     return list;
   }
 
-  Future<List<PedidoModel>> getPedidos(String fecha) async {
+  Future<List<UserModel>> getUsuario2(String name) async {
     final db = await database;
-    final res = await db.rawQuery("SELECT * FROM pedido where fecha='$fecha'");
-    List<PedidoModel> list=res.isNotEmpty
-                          ?res.map((e) => PedidoModel.fromJson(e)).toList()
-                          :[];
+    final res = await db.rawQuery("SELECT * FROM usuario where nombre='$name'");
+    List<UserModel> list =
+        res.isNotEmpty ? res.map((e) => UserModel.fromJson(e)).toList() : [];
     return list;
   }
 
   /* actualizar regstros */
-  updatePedido(PedidoModel nuevoPedido )async{
-    final db=await database;
-    final res=await db.update('pedido', nuevoPedido.toJson(),where: 'id=?',whereArgs:[nuevoPedido.id] );
+  Future<int> updateUser(UserModel nuevoUsuario) async {
+    final db = await database;
+    final res = await db.update('usuario', nuevoUsuario.toJson(),
+        where: 'id=?', whereArgs: [nuevoUsuario.id]);
     return res;
-
   }
 
   /* eliminar registros por id */
-  Future<int> deletePedido( int id ) async {
-
-    final db  = await database;
-    final res = await db.delete('pedido', where: 'id = ?', whereArgs: [id]);
+  Future<int> deleteUser(int id) async {
+    final db = await database;
+    final res = await db.delete('usuario', where: 'id = ?', whereArgs: [id]);
     return res;
   }
-  /* eliminar todos los registros */
-  Future<int> deletePedidos() async {
 
-    final db  = await database;
-    final res = await db.rawDelete('DELETE FROM pedido');
+  /* eliminar todos los registros */
+  Future<int> deleteUsuarios() async {
+    final db = await database;
+    final res = await db.rawDelete('DELETE FROM usuario');
     return res;
   }
 }

@@ -1,7 +1,10 @@
+import 'package:delivery_1/src/db/db.dart';
 import 'package:delivery_1/src/routes/constantes.dart';
 import 'package:delivery_1/src/widgets/h1_.dart';
 import 'package:delivery_1/src/widgets/headlibre_.dart';
 import 'package:delivery_1/src/widgets/input.dart';
+import 'package:delivery_1/src/widgets/lista_user.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class IniciarSession extends StatefulWidget {
@@ -12,8 +15,8 @@ class IniciarSession extends StatefulWidget {
 }
 
 class _IniciarSessionState extends State<IniciarSession> {
-  final TextEditingController _usuarioController = TextEditingController();
-  final TextEditingController _contrasenaController = TextEditingController();
+  final TextEditingController _nombreController = TextEditingController();
+  final TextEditingController _apellidosController = TextEditingController();
   String _mensaje = '';
   @override
   Widget build(BuildContext context) {
@@ -40,14 +43,13 @@ class _IniciarSessionState extends State<IniciarSession> {
                 children: [
                   h1_(value: 'Bienvenido'),
                   input_(
-                      label: 'Usuario',
+                      label: 'Nombres',
                       type: 'text',
-                      controller: _usuarioController),
+                      controller: _nombreController),
                   input_(
-                      label: 'Contraseña',
-                      placeholder_: 'Contraseña',
-                      type: 'password',
-                      controller: _contrasenaController),
+                      label: 'Apellidos',
+                      placeholder_: 'Apellidos',
+                      controller: _apellidosController),
                   Center(
                     child: Container(
                       margin: const EdgeInsets.all(10),
@@ -59,7 +61,7 @@ class _IniciarSessionState extends State<IniciarSession> {
                       ),
                       child: GestureDetector(
                         onTap: () {
-                          _verificarCredenciales;
+                          _agregar();
                         },
                         child: const Text(
                           'Registrarse',
@@ -71,7 +73,13 @@ class _IniciarSessionState extends State<IniciarSession> {
                       ),
                     ),
                   ),
-                  Text(_mensaje,style: const TextStyle(color: Colors.red,)),
+                  Text(
+                    _mensaje,
+                    style: const TextStyle(
+                      color: Colors.red,
+                    ),
+                  ),
+                  const ListaUser(),
                 ],
               ),
             ),
@@ -92,20 +100,25 @@ class _IniciarSessionState extends State<IniciarSession> {
     );
   }
 
-  void _verificarCredenciales() {
-    String usuario = _usuarioController.text;
-    String contrasena = _contrasenaController.text;
+  void _agregar() {
+    String nombre = _nombreController.text;
+    String apellidos = _apellidosController.text;
 
-    // Aquí puedes agregar la lógica para verificar las credenciales
-    // Por ejemplo, puedes comparar el usuario y la contraseña con los valores esperados
-
-    if (usuario == 'usuarioCorrecto' && contrasena == 'contrasenaCorrecta') {
+    if (nombre.isNotEmpty && apellidos.isNotEmpty) {
+      final usuarios = UserModel(id: 2, nombre: nombre, apellidos: apellidos);
+      DBProvider.db.nuevoUsuario(usuarios);
+      if (kDebugMode) {
+        print('Uuvenal');
+      }
       setState(() {
-        _mensaje = 'Inicio de sesión correcto';
+        _mensaje = 'Envio';
       });
     } else {
+      if (kDebugMode) {
+        print('Uuvenasssssl');
+      }
       setState(() {
-        _mensaje = 'Usuario o contraseña incorrectos';
+        _mensaje = 'Completar la inforacion';
       });
     }
   }
